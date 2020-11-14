@@ -1,15 +1,21 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "mnemonic.c"
-#include "functions/Utilities.c"
-#include "functions/Comment.c"
-#include "parsedCode.c"
-#include "label.c"
+#include <ctype.h>
+#include <string.h>
 #define MAX_LINE_SIZE 100
-
 int pc = 0;
+#include "error.c" /* Independent */
+#include "functions/Utilities.c" /* Independent */
+#include "operand.c"     /* Independent */
+#include "mnemonic.c"   /* Independent */
+#include "functions/Comment.c" /* Independent */
+#include "label.c" /* Dependent on Utilities */
+#include "parsedCode.c" /* Dependent on mnemonic and label*/
+
 
 void parseSentence(char* line, int *pCounter);
+void parse1(FILE** file);
+void parse2();
 int main(int argc, char* argv[])
 {
     initMnemonicList();
@@ -19,7 +25,32 @@ int main(int argc, char* argv[])
         FILE *fin = fopen(argv[1], "r");
     if (fin == 0) printf("Not able to open %s\n",argv[1]);
     else {
-        char str[MAX_LINE_SIZE];
+        /* int i = 0; */
+        parse1(&fin);
+      /*   while(i<pc) {    
+            printf("Label: %s\nAddr: %d\nOperation: %s\nOpcode: %d\nOperand: %s\nComment: %s\n\n",
+            parsedCode[i].label, parsedCode[i].addr, parsedCode[i].op.str, parsedCode[i].op.opcode, parsedCode[i].opr.op,
+            parsedCode[i].comment);
+            i++;
+        } */
+        /* printf("%d\n", error_list_index); */
+        /* show_errors(); */
+    }
+    }
+    return 0;
+}
+
+/* =============================================================================================== */
+
+void parse2() {
+    int i = 0;
+    for (;i<pc;i++) {
+        check_and_set_line(i);
+    }
+}
+void parse1(FILE** file) {
+    FILE* fin = *file;
+      char str[MAX_LINE_SIZE];
         char c = getc(fin);
         while(c != EOF) {
             str[0] = c;
@@ -28,34 +59,20 @@ int main(int argc, char* argv[])
                 continue; 
             }
             fscanf(fin, "%[^\n]%*c", str+1);
+            validate_line(str);
             parseSentence(str, &pc);
             c = getc(fin);
             pc++;
         };
-        int i = 0;
-
-        while(i<pc) {    
-            printf("Label: %s\nAddr: %d\nOperation: %s\nOpcode: %d\nOperand: %s\nComment: %s\n\n",
-            parsedCode[i].label, parsedCode[i].addr, parsedCode[i].op.str, parsedCode[i].op.opcode, parsedCode[i].operand,
-            parsedCode[i].comment);
-            i++;
-        }
-
-        fclose(fin);
-    }
-    }
-    return 0;
 }
-
-/* =============================================================================================== */
-
-
 void parseSentence(char* line, int *pCounter) {
     int size = getSize(line);
     int index = hasComment(line, size);
+    int delimeter = -1;
+    int opcodeIndex = -1;
     if (index != -1) {
-        parsedCode[*pCounter].comment = (char*)(malloc((size-index)*sizeof(char)));
         int i=index+1;
+        parsedCode[*pCounter].comment = (char*)(malloc((size-index)*sizeof(char)));
         for(;i<size;i++) parsedCode[*pCounter].comment[i-index-1] = line[i];
         line = removeComment(line, index);
         size = getSize(line);
@@ -63,22 +80,28 @@ void parseSentence(char* line, int *pCounter) {
 
     line = removeWhiteSpace(line, size);
     size = getSize(line);
+    delimeter = hasLabel(line,size);
+    opcodeIndex = getOperation(line, delimeter, size);
     parsedCode[*pCounter].addr = *pCounter;
-    parsedCode[*pCounter].operand = (char*)(malloc(10*sizeof(char)));
-    parsedCode[*pCounter].operand[0] = '\0';
-    int delimeter = hasLabel(line,size);
+    parsedCode[*pCounter].opr.op = (char*)(malloc(10*sizeof(char)));
+    parsedCode[*pCounter].opr.op[0] = '\0';
     if (delimeter != -1) {
         char *tmp = getLabel(line, delimeter);
-        parsedCode[*pCounter].label = tmp;
-        labels[labelArrayIndex].str = tmp;
-        labels[labelArrayIndex].addr = *pCounter;
-        labelArrayIndex++;
+        if (!bogusLabel(tmp, getSize(tmp))) {
+            parsedCode[*pCounter].label = tmp;
+            storeLabel(tmp, *pCounter);
+            labelArrayIndex++;
+        } else {
+            push_errors("Bogus label found", pc);
+        }
     }
-    int opcodeIndex = getOperation(line, delimeter, size);
     if (opcodeIndex != -1) {
-        parsedCode[*pCounter].op = mnemonics[opcodeIndex];
-        delimeter += (parsedCode[*pCounter].op.size+1);
         int i = delimeter;
-        for(;i<size;i++) parsedCode[*pCounter].operand[i-delimeter] = line[i];
+        parsedCode[*pCounter].op = mnemonics[opcodeIndex];
+        /* Getting operand starting point and storing the operand */
+        delimeter += (parsedCode[*pCounter].op.size+1);
+        for(;i<size;i++) parsedCode[*pCounter].opr.op[i-delimeter] = line[i];
+    } else {
+        push_errors("Undefined operand", *pCounter);
     }
 }
