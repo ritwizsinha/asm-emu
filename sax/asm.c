@@ -33,8 +33,10 @@ int main(int argc, char* argv[])
             parsedCode[i].comment);
             i++;
         } */
+        
         /* printf("%d\n", error_list_index); */
-        /* show_errors(); */
+        parse2();
+        show_errors();
     }
     }
     return 0;
@@ -59,7 +61,6 @@ void parse1(FILE** file) {
                 continue; 
             }
             fscanf(fin, "%[^\n]%*c", str+1);
-            validate_line(str);
             parseSentence(str, &pc);
             c = getc(fin);
             pc++;
@@ -67,20 +68,26 @@ void parse1(FILE** file) {
 }
 void parseSentence(char* line, int *pCounter) {
     int size = getSize(line);
-    int index = hasComment(line, size);
     int delimeter = -1;
     int opcodeIndex = -1;
+    /* Find and remove comment */
+    int index = hasComment(line);
     if (index != -1) {
+        /* Allocate space and store the comment */
         int i=index+1;
         parsedCode[*pCounter].comment = (char*)(malloc((size-index)*sizeof(char)));
         for(;i<size;i++) parsedCode[*pCounter].comment[i-index-1] = line[i];
         line = removeComment(line, index);
         size = getSize(line);
     }
-
-    line = removeWhiteSpace(line, size);
+    /* Remove all whitespace */
+    line = removeWhiteSpace(line);
+    /* Validating line after removing commment and whitespace */
+    validate_line(line);
     size = getSize(line);
-    delimeter = hasLabel(line,size);
+    if (!size) return;
+    delimeter = hasLabel(line);
+    if (delimeter != -1 && delimeter == size-1) return; 
     opcodeIndex = getOperation(line, delimeter, size);
     parsedCode[*pCounter].addr = *pCounter;
     parsedCode[*pCounter].opr.op = (char*)(malloc(10*sizeof(char)));
@@ -96,12 +103,12 @@ void parseSentence(char* line, int *pCounter) {
         }
     }
     if (opcodeIndex != -1) {
-        int i = delimeter;
+        int i = delimeter == -1 ? 0 : delimeter;
         parsedCode[*pCounter].op = mnemonics[opcodeIndex];
         /* Getting operand starting point and storing the operand */
         delimeter += (parsedCode[*pCounter].op.size+1);
         for(;i<size;i++) parsedCode[*pCounter].opr.op[i-delimeter] = line[i];
     } else {
-        push_errors("Undefined operand", *pCounter);
+        push_errors("Undefined mnemonic", *pCounter);
     }
 }

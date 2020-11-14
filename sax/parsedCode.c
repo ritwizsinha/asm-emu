@@ -51,6 +51,6 @@ void check_operators(int index) {
 }
 void check_and_set_line(int index) {
     char* operand = parsedCode[index].opr.op;
-    check_and_set_opr(index, operand, getSize(operand));
     check_operators(index);
+    check_and_set_opr(index, operand, getSize(operand));
 } 

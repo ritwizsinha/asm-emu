@@ -34,9 +34,9 @@ char* getLabel(char* line, int delimiter) {
     return label;
 }
 
-int hasLabel(char* line, int size) {
+int hasLabel(char* line) {
     int i = 0;
-    for(;i<size;i++) if (line[i] == ':') return i;
+    for(;line[i]!='\0';i++) if (line[i] == ':') return i;
     return -1;
 }
 

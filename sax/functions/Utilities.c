@@ -1,12 +1,13 @@
 int getSize(char* line) {
     int i=0;
+    if (!line) return 0;
     while(line[i]!='\0') i++;
     return i;
 }
 
 void validate_line(char* line) {
     int i = 0;
-    char* possibleLanguage = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 \t:;";
+    char* possibleLanguage = ":;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 \t";
     /* TO check no unwanted characters appear */
     int colonCount = 0;
     while(line[i] != '\0') {
@@ -28,10 +29,10 @@ int compareString(char* str1, int size1, char* str2, int size2) {
     return 1;
 }
 
-char* removeWhiteSpace(char* line, int size) {
+char* removeWhiteSpace(char* line) {
     int l = 0;
     int i = 0;
-    for(;i<size;i++) if (line[i] != ' ' && line[i] != '\t') line[l++] = line[i];
+    for(;line[i]!='\0';i++) if (line[i] != ' ' && line[i] != '\t') line[l++] = line[i];
     line[l] = '\0';
     return line;
 }
