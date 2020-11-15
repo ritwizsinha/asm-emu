@@ -48,3 +48,16 @@ void clearString(char* line, int size) {
     int i=0;
     for(;i<size;i++) line[i] = '\0';
 }
+
+char* getFileName(char* line) {
+    int size = getSize(line),dotIndex = -1, i=0, slashIndex=0, endIndex = -1, startIndex=-1;
+    char* fileName = '\0';
+    for(;i<size;i++) if (line[i] == '.') dotIndex = i;
+    endIndex = dotIndex == -1 ? size-1 : dotIndex-1;
+    for(i=0;i<size;i++) if (line[i] == '/') slashIndex = i;
+    startIndex = slashIndex == 0 ? slashIndex : slashIndex+1;
+    fileName = (char*)(malloc(sizeof(char)*(endIndex-startIndex+1)));
+    for(i=startIndex;i<=endIndex;i++) fileName[i-startIndex] = line[i];
+    return fileName;
+}
+

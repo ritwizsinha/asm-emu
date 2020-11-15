@@ -55,6 +55,8 @@ void check_operators(int index) {
 }
 void check_and_set_line(int index) {
     char* operand = parsedCode[index].opr.op;
+    /* Priority wise first check errors in the operands */
     check_and_set_operand(index, operand, getSize(operand));
+    /* If operands are correct and find errors in teh operators */
     check_operators(index);
 } 

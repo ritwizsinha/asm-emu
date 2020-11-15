@@ -11,7 +11,7 @@ int pc = 0;
 #include "functions/Comment.c" /* Independent */
 #include "label.c" /* Dependent on Utilities */
 #include "parsedCode.c" /* Dependent on mnemonic and label*/
-
+#include "file.c"
 
 void parseSentence(char* line, int *pCounter);
 void parse1(FILE** file);
@@ -37,15 +37,14 @@ int main(int argc, char* argv[])
         
         /* printf("%d\n", error_list_index); */
         parse2();
-        printf("\n\n");
         show_errors();
+        createFile(getFileName(argv[1]));
     }
     }
     return 0;
 }
 
 /* =============================================================================================== */
-
 void parse2() {
     int i = 0;
     for (;i<pc;i++) {
