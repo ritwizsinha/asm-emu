@@ -7,7 +7,7 @@ int getSize(char* line) {
 
 void validate_line(char* line) {
     int i = 0;
-    char* possibleLanguage = ":;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 \t";
+    char* possibleLanguage = ":;-+ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     /* TO check no unwanted characters appear */
     int colonCount = 0;
     while(line[i] != '\0') {
@@ -37,3 +37,14 @@ char* removeWhiteSpace(char* line) {
     return line;
 }
 
+int numInRange(int num) {
+    int MX = (1<<23)-1;
+    int MN = -(1<<23);
+    if (num > MX || num < MN) return 0;
+    return 1;
+}
+
+void clearString(char* line, int size) {
+    int i=0;
+    for(;i<size;i++) line[i] = '\0';
+}
