@@ -2,8 +2,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
-#define MAX_LINE_SIZE 100
-int pc = 0;
+#include "constants.c" /* Independent */
 #include "error.c" /* Independent */
 #include "functions/Utilities.c" /* Independent */
 #include "operand.c"     /* Independent */
@@ -25,17 +24,7 @@ int main(int argc, char* argv[])
         FILE *fin = fopen(argv[1], "r");
     if (fin == 0) printf("Not able to open %s\n",argv[1]);
     else {
-        /* int i = 0; */
         parse1(&fin);
-/*         int i=0;
-       while(i<pc) {    
-            printf("Label: %s\nAddr: %d\nOperation: %s\nOpcode: %d\nOperand: %s\nComment: %s\n\n",
-            parsedCode[i].label, parsedCode[i].addr, parsedCode[i].op.str, parsedCode[i].op.opcode, parsedCode[i].opr.op,
-            parsedCode[i].comment);
-            i++;
-        } */
-        
-        /* printf("%d\n", error_list_index); */
         parse2();
         show_errors();
         createFile(getFileName(argv[1]));
@@ -50,6 +39,9 @@ void parse2() {
     for (;i<pc;i++) {
         check_and_set_line(i);
     }
+    /* Set lines with only comments having invalid address */
+        assign_valid_address();
+        assignInstr();
 }
 void parse1(FILE** file) {
     FILE* fin = *file;

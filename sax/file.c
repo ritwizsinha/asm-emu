@@ -7,30 +7,43 @@ void createListingFile(char* fileName) {
     fwrite = fopen(listingFileName, "w");
     for(;index<pc;index++) {
         struct parsedCodeLine tmp = parsedCode[index]; 
-/*         printf("Address: %d\nComment: %s\nLabel: %s\nOperand Required: %d\nOpcode: %d\nOperator Size: %d\nOperator: %s\nOperand: %s\nIsLabel: %d\nIsDigit: %d\nDigit: %d\nNo operation: %d\n\n",
-        tmp.addr,
-        tmp.comment,
-        tmp.label,
-        tmp.op.op_req,
-        tmp.op.opcode,
-        tmp.op.size,
-        tmp.op.str,
-        tmp.opr.op,
-        tmp.opr.isLabel,
-        tmp.opr.isDigit,
-        tmp.opr.digit,
-        tmp.opr.noOp
-        ); */
-        
+        if (tmp.addr == -1) {
+            fprintf(fwrite, "; %s\n", tmp.comment);
+        } else {
+            fprintf(fwrite, "%08x\t %08x\t", tmp.addr, tmp.instrCode);
+            if (tmp.label) {
+                fprintf(fwrite, "%s:\t", tmp.label);
+            } 
+            if (tmp.op.str)  {
+                fprintf(fwrite, "%s ", tmp.op.str);
+            }
+            if (tmp.op.op_req && !tmp.opr.isDigit) {
+                fprintf(fwrite, "%s:\t", tmp.opr.op);
+            } else if (tmp.op.op_req) {
+                fprintf(fwrite, "%d\t", tmp.opr.digit);
+            }
+            if (tmp.comment) {
+                fprintf(fwrite, ";%s", tmp.comment);
+            }
+            fprintf(fwrite, "\n");
+        }
     }
     fclose(fwrite);
 }
 
 void createMachineCodeFile(char* fileName) {
     char machineCodeFileName[50];
+    FILE* fout;
+    int i = 0;
     strcpy(machineCodeFileName, fileName);
     strcat(machineCodeFileName, ".o");
     printf("%s\n", machineCodeFileName);
+    fout = fopen(machineCodeFileName, "wb");
+    for(;i<pc;i++) {
+        if (parsedCode[i].addr == -1) continue;
+        fwrite(&parsedCode[i].instrCode, sizeof(int), 1, fout);
+    }
+    fclose(fout);
 }
 void createErrorFile(char* fileName) {
     char errorFileName[50];

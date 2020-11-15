@@ -22,12 +22,6 @@ void validate_line(char* line) {
     }
     if (colonCount > 1) push_errors("Found more than one colon on a line", pc);
 }
-int compareString(char* str1, int size1, char* str2, int size2) {
-    int i=0;
-    if (size1 != size2) return 0;
-    for(;i<size1;i++) if (str1[i] != str2[i]) return 0;
-    return 1;
-}
 
 char* removeWhiteSpace(char* line) {
     int l = 0;
@@ -40,6 +34,13 @@ char* removeWhiteSpace(char* line) {
 int numInRange(int num) {
     int MX = (1<<23)-1;
     int MN = -(1<<23);
+    if (num > MX || num < MN) return 0;
+    return 1;
+}
+
+int numInRange32(int num) {
+    int MX = ((long)1<<31)-1;
+    int MN = -1 - MX;
     if (num > MX || num < MN) return 0;
     return 1;
 }

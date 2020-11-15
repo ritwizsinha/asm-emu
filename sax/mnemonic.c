@@ -1,5 +1,8 @@
-#define MNEMONIC_STR_SIZE 21
-
+/* Structure for an organized view of the operator
+str stores the actual operator in string
+size is the size of the string
+opcode is the opcode of the mnemonic
+op_req denotes whether this particular operator requires an operand or not */
 struct operator {
     char* str;
     int size;
@@ -16,6 +19,7 @@ void assignMnemonic(struct operator *ptr, char* str, int size, int opcode, int o
 
 void getOperand(char* label, int size);
 
+/* Store all the defined mnemonics */
 void initMnemonicList() {
     assignMnemonic(mnemonics,"ldc", 3, 0, 1);
     assignMnemonic(mnemonics+1,"adc", 3, 1, 1);
@@ -40,6 +44,7 @@ void initMnemonicList() {
     assignMnemonic(mnemonics+20, "SET", 3, -1, 1);
 }
 
+/* Get the index of a particular mnemonic in the mnemonic table */
 int getOperation(char* line, int delimeter, int size) {
     int i = 0;
     if (delimeter >= size ) return -1;
