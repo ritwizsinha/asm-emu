@@ -27,7 +27,8 @@ int main(int argc, char* argv[])
     else {
         /* int i = 0; */
         parse1(&fin);
-      /*   while(i<pc) {    
+/*         int i=0;
+       while(i<pc) {    
             printf("Label: %s\nAddr: %d\nOperation: %s\nOpcode: %d\nOperand: %s\nComment: %s\n\n",
             parsedCode[i].label, parsedCode[i].addr, parsedCode[i].op.str, parsedCode[i].op.opcode, parsedCode[i].opr.op,
             parsedCode[i].comment);
@@ -36,6 +37,7 @@ int main(int argc, char* argv[])
         
         /* printf("%d\n", error_list_index); */
         parse2();
+        printf("\n\n");
         show_errors();
     }
     }
@@ -52,9 +54,10 @@ void parse2() {
 }
 void parse1(FILE** file) {
     FILE* fin = *file;
-      char str[MAX_LINE_SIZE];
+        char str[MAX_LINE_SIZE];
         char c = getc(fin);
         while(c != EOF) {
+            clearString(str, MAX_LINE_SIZE);
             str[0] = c;
             if (c == '\n') {
                 c = getc(fin);
@@ -72,6 +75,7 @@ void parseSentence(char* line, int *pCounter) {
     int opcodeIndex = -1;
     /* Find and remove comment */
     int index = hasComment(line);
+    parsedCode[*pCounter].addr = *pCounter;
     if (index != -1) {
         /* Allocate space and store the comment */
         int i=index+1;
@@ -87,12 +91,7 @@ void parseSentence(char* line, int *pCounter) {
     size = getSize(line);
     if (!size) return;
     delimeter = hasLabel(line);
-    if (delimeter != -1 && delimeter == size-1) return; 
-    opcodeIndex = getOperation(line, delimeter, size);
-    parsedCode[*pCounter].addr = *pCounter;
-    parsedCode[*pCounter].opr.op = (char*)(malloc(10*sizeof(char)));
-    parsedCode[*pCounter].opr.op[0] = '\0';
-    if (delimeter != -1) {
+        if (delimeter != -1) {
         char *tmp = getLabel(line, delimeter);
         if (!bogusLabel(tmp, getSize(tmp))) {
             parsedCode[*pCounter].label = tmp;
@@ -102,6 +101,10 @@ void parseSentence(char* line, int *pCounter) {
             push_errors("Bogus label found", pc);
         }
     }
+    if (delimeter != -1 && delimeter == size-1) return; 
+    opcodeIndex = getOperation(line, delimeter, size);
+    parsedCode[*pCounter].opr.op = (char*)(malloc(10*sizeof(char)));
+    parsedCode[*pCounter].opr.op[0] = '\0';
     if (opcodeIndex != -1) {
         int i = delimeter == -1 ? 0 : delimeter;
         parsedCode[*pCounter].op = mnemonics[opcodeIndex];
