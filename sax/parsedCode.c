@@ -25,32 +25,36 @@ void initParsedCode() {
     }
 }
 
-void check_and_set_opr(int index, char* line, int size) {
+void check_and_set_operand(int index, char* line, int size) {
     char* locationPtr = line;
     int num = -1;
     if (size == 0) return;
     if (index >= pc) return;
-    num  = strtol(line, &locationPtr, 10);
+    num  = strtol(line, &locationPtr, 0);
     /* Check if it is a number */
-    if (locationPtr == 0) {
+    if (*locationPtr == '\0') {
+        if (numInRange(num)) {
         parsedCode[index].opr.isDigit = 1;
         parsedCode[index].opr.digit = num;
         parsedCode[index].opr.noOp = 0;
+        } else {
+            push_errors("Number out of Range", parsedCode[index].addr);
+        }
     } else if (checkLabelExists(line, size)) {
         parsedCode[index].opr.isLabel = 1;
         parsedCode[index].opr.noOp = 0;
     } else {
-        push_errors("Label is not defined", parsedCode[index].addr);
+        push_errors("Operand is not defined", parsedCode[index].addr);
     }
 }
 void check_operators(int index) {
     struct operand  oprd = parsedCode[index].opr;
     struct operator op = parsedCode[index].op;
     if (op.op_req && oprd.noOp) push_errors("Operand required", parsedCode[index].addr);
-    if (!op.op_req && !oprd.noOp) push_errors("Operand not needed", parsedCode[index].addr);
+    if (!op.op_req && !oprd.noOp) push_errors("Operand not required", parsedCode[index].addr);
 }
 void check_and_set_line(int index) {
     char* operand = parsedCode[index].opr.op;
+    check_and_set_operand(index, operand, getSize(operand));
     check_operators(index);
-    check_and_set_opr(index, operand, getSize(operand));
 } 
