@@ -17,10 +17,8 @@ void createListingFile(char* fileName) {
             if (tmp.op.str)  {
                 fprintf(fwrite, "%s ", tmp.op.str);
             }
-            if (tmp.op.op_req && !tmp.opr.isDigit) {
-                fprintf(fwrite, "%s:\t", tmp.opr.op);
-            } else if (tmp.op.op_req) {
-                fprintf(fwrite, "%d\t", tmp.opr.digit);
+            if (tmp.op.op_req) {
+                fprintf(fwrite, "%s\t", tmp.opr.op);
             }
             if (tmp.comment) {
                 fprintf(fwrite, ";%s", tmp.comment);
@@ -37,7 +35,6 @@ void createMachineCodeFile(char* fileName) {
     int i = 0;
     strcpy(machineCodeFileName, fileName);
     strcat(machineCodeFileName, ".o");
-    printf("%s\n", machineCodeFileName);
     fout = fopen(machineCodeFileName, "wb");
     for(;i<pc;i++) {
         if (parsedCode[i].addr == -1) continue;

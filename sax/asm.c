@@ -32,7 +32,7 @@ int main(int argc, char* argv[])
     }
     return 0;
 }
-
+ 
 /* =============================================================================================== */
 void parse2() {
     int i = 0;
@@ -64,14 +64,13 @@ void parseSentence(char* line, int *pCounter) {
     int size = getSize(line);
     int delimeter = -1;
     int opcodeIndex = -1;
+    int startOperand;
     /* Find and remove comment */
     int index = hasComment(line);
-    parsedCode[*pCounter].addr = *pCounter;
     if (index != -1) {
         /* Allocate space and store the comment */
-        int i=index+1;
-        parsedCode[*pCounter].comment = (char*)(malloc((size-index)*sizeof(char)));
-        for(;i<size;i++) parsedCode[*pCounter].comment[i-index-1] = line[i];
+        parsedCode[*pCounter].comment = (char*)(malloc((size-index+1)*sizeof(char)));
+        strcpy(parsedCode[*pCounter].comment, line + index+1);
         line = removeComment(line, index);
         size = getSize(line);
     }
@@ -83,25 +82,16 @@ void parseSentence(char* line, int *pCounter) {
     if (!size) return;
     delimeter = hasLabel(line);
         if (delimeter != -1) {
-        char *tmp = getLabel(line, delimeter);
-        if (!bogusLabel(tmp, getSize(tmp))) {
-            parsedCode[*pCounter].label = tmp;
-            storeLabel(tmp, *pCounter);
-            labelArrayIndex++;
-        } else {
-            push_errors("Bogus label found", pc);
+            storeLabel(*pCounter, line, delimeter);
+            pushLabel(line, delimeter);
         }
-    }
+    /* If there is a label and after removing label there is nothing then return */
     if (delimeter != -1 && delimeter == size-1) return; 
     opcodeIndex = getOperation(line, delimeter, size);
-    parsedCode[*pCounter].opr.op = (char*)(malloc(10*sizeof(char)));
-    parsedCode[*pCounter].opr.op[0] = '\0';
     if (opcodeIndex != -1) {
-        int i = delimeter == -1 ? 0 : delimeter;
-        parsedCode[*pCounter].op = mnemonics[opcodeIndex];
-        /* Getting operand starting point and storing the operand */
-        delimeter += (parsedCode[*pCounter].op.size+1);
-        for(;i<size;i++) parsedCode[*pCounter].opr.op[i-delimeter] = line[i];
+        storeOperation(opcodeIndex, *pCounter);
+        startOperand = delimeter+1+parsedCode[*pCounter].op.size;
+        storeOperand(*pCounter, startOperand, line);
     } else {
         push_errors("Undefined mnemonic", *pCounter);
     }

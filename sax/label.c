@@ -10,7 +10,7 @@ struct Label {
 } labels[lArrSize];
 
 /* Checks if a label exists in the labels table */
-int checkLabelExists(char* label) {
+int checkLabelExists(const char* label) {
     int i = 0;
     for (;i<labelArrayIndex;i++) 
         if (!strcmp(label, labels[i].str)) return 1;
@@ -18,41 +18,26 @@ int checkLabelExists(char* label) {
 }
 
 /* Checking if the label is bogus ie the label starts with a digit or its size is 0 */
-int bogusLabel(char* label, int size) {
-    if (size == 0) return 1;
+int bogusLabel(char* label) {
+    if (label == 0) return 1;
     if (isdigit(label[0])) return 1;
     return 0;
 }
 
-/* Extracting the label from a code line */
-char* getLabel(char* line, int delimiter) {
-    int has_error = 0;
-    char* label = (char*)malloc(20*sizeof(char));
-    int k = 0;
-    label[0] = '\0';
-    while (k < delimiter) {
-        /* Store error if label is not alphanumeric */
-        if (!isalnum(line[k]) && !has_error) push_errors("Label not alphanumeric" , pc), has_error=1;
-        label[k] = line[k];
-        k++;
-    }
-    /* Store error if there is a duplicate label */
-    if (checkLabelExists(label)) push_errors("Duplicate label found", pc);
-    return label;
-}
-
 /* Check if there exists a label in the code line by checking for ':' */
-int hasLabel(char* line) {
-    int i = 0;
-    for(;line[i]!='\0';i++) if (line[i] == ':') return i;
-    return -1;
+int hasLabel(const char* line) {
+    char* ptr = strchr(line, ':');
+    return (ptr == 0 ? -1 : ptr - line); 
 }
 
 /* Store the label in the labels array */
-void storeLabel(char *label, int programCounterAddr) {
-    labels[labelArrayIndex].str = label;
-    labels[labelArrayIndex].addr = programCounterAddr;
+void pushLabel(char* line, int delimeter) {
+    int k = 0;
+    labels[labelArrayIndex].str = (char*)malloc(sizeof(char)*MAX_LABEL_SIZE);
+    for(;k < delimeter;k++) labels[labelArrayIndex].str[k] = line[k];
+    labels[labelArrayIndex].addr = -1;
     labels[labelArrayIndex].used = 0;
+    labelArrayIndex++;
 }
 
 int findLabelAddress(char* label) {

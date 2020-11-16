@@ -1,11 +1,11 @@
-int getSize(char* line) {
+int getSize(const char* line) {
     int i=0;
     if (!line) return 0;
     while(line[i]!='\0') i++;
     return i;
 }
 
-void validate_line(char* line) {
+void validate_line(const char* line) {
     int i = 0;
     char* possibleLanguage = ":;-+ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     /* TO check no unwanted characters appear */

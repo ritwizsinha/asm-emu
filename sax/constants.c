@@ -6,6 +6,7 @@
 #define MAX_CODE_SIZE 1000
 /* Number of identified mnemonics in the language */
 #define MNEMONIC_STR_SIZE 21
+#define MAX_LABEL_SIZE 20
 
 
 /* Index in the list of labels */

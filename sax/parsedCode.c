@@ -149,3 +149,21 @@ void assignInstr() {
         parsedCode[i].instrCode = instruction;
     }
 }
+
+void storeLabel(int pc, char* line, int delimeter) {
+    int k = 0;
+    parsedCode[pc].label = (char*)(malloc(sizeof(char)*MAX_LABEL_SIZE));
+    for(;k < delimeter;k++)  parsedCode[pc].label[k] = line[k];
+}
+
+void storeOperation(int opcodeIndex, int pc) {
+    if (opcodeIndex == -1) return;
+    parsedCode[pc].op = mnemonics[opcodeIndex];
+}
+
+void storeOperand(int pc, int index, char* line) {
+    int size = index;
+    for(;line[size]!='\0';size++);
+    parsedCode[pc].opr.op = (char*)(malloc(sizeof(char)*(size+1)));
+    strcpy(parsedCode[pc].opr.op, line+index); 
+}

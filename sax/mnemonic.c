@@ -45,7 +45,7 @@ void initMnemonicList() {
 }
 
 /* Get the index of a particular mnemonic in the mnemonic table */
-int getOperation(char* line, int delimeter, int size) {
+int getOperation(const char* line, int delimeter, int size) {
     int i = 0;
     if (delimeter >= size ) return -1;
     delimeter = delimeter == -1 ?  0 : delimeter+1;
