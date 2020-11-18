@@ -41,8 +41,11 @@ void initParsedCode() {
 void check_and_set_operand(int index, char* line) {
     char* locationPtr = line;
     int num = -1;
+    int size = getSize(line);
     if (line == 0 || line[0] == '\0') return;
     if (index >= pc) return;
+    if ((!strcmp(parsedCode[index].op.str, "data") || !strcmp(parsedCode[index].op.str, "SET")) && size > 9) push_warnings("Overflow, data more than 32 bits", index);
+    else if (size > 7) push_warnings("Overlow, offset more than 24 bits", index);
     /* Strtol finds the number in the string if present in hexadecimal, octal or decimal */
     num  = strtol(line, &locationPtr, 0);
     /* Check if it is a number */
@@ -140,13 +143,13 @@ void assignInstr() {
                     if (numInRange32(findOffset)) {
                         instruction = findOffset;
                     } else {
-                        push_warnings("The label offset is out of range", parsedCode[i].addr);
+                        push_warnings("The label offset is out of range", i);
                     }
                 } else if(parsedCode[i].opr.isDigit) {
                     if (numInRange32(parsedCode[i].opr.digit)) {
                         instruction |= ((parsedCode[i].opr.digit)<<8);
                     } else {
-                        push_warnings("Number out of range", parsedCode[i].addr);
+                        push_warnings("Number out of range", i);
                     }
                 }
             }
