@@ -12,7 +12,7 @@ struct Label {
 /* Checks if a label exists in the labels table */
 int checkLabelExists(const char* label) {
     int i = 0;
-    for (;i<labelArrayIndex;i++) 
+    for (;i<label_array_index;i++) 
         if (!strcmp(label, labels[i].str)) return 1;
     return 0;
 }
@@ -33,11 +33,11 @@ int hasLabel(const char* line) {
 /* Store the label in the labels array */
 void pushLabel(char* line, int delimeter) {
     int k = 0;
-    labels[labelArrayIndex].str = (char*)malloc(sizeof(char)*MAX_LABEL_SIZE);
-    for(;k < delimeter;k++) labels[labelArrayIndex].str[k] = line[k];
-    labels[labelArrayIndex].addr = -1;
-    labels[labelArrayIndex].used = 0;
-    labelArrayIndex++;
+    labels[label_array_index].str = (char*)malloc(sizeof(char)*MAX_LABEL_SIZE);
+    for(;k < delimeter;k++) labels[label_array_index].str[k] = line[k];
+    labels[label_array_index].addr = -1;
+    labels[label_array_index].used = 0;
+    label_array_index++;
 }
 
 int findLabelAddress(char* label) {

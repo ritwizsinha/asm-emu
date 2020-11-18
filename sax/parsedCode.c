@@ -14,6 +14,11 @@ struct parsedCodeLine {
     char* comment;
     int instrCode;
 } parsedCode[MAX_CODE_SIZE];
+void print(struct parsedCodeLine tmp) {
+    printf("Address: %d\nComment: %s\nLabel: %s\nOperator: %s\nOperand: %s\nisDigit: %d\nisLabel: %d\n\n",
+    tmp.addr, tmp.comment, tmp.label, tmp.op.str, tmp.opr.op, tmp.opr.isDigit, tmp.opr.isLabel);
+}
+
 /* Initialize the parsed code table */
 void initParsedCode() {
     int i=0;
@@ -33,10 +38,10 @@ void initParsedCode() {
     }
 }
 /* Function which checks the validity of operands , stores the errors if any and stores the validated operands */
-void check_and_set_operand(int index, char* line, int size) {
+void check_and_set_operand(int index, char* line) {
     char* locationPtr = line;
     int num = -1;
-    if (size == 0) return;
+    if (line == 0 || line[0] == '\0') return;
     if (index >= pc) return;
     /* Strtol finds the number in the string if present in hexadecimal, octal or decimal */
     num  = strtol(line, &locationPtr, 0);
@@ -46,12 +51,15 @@ void check_and_set_operand(int index, char* line, int size) {
         parsedCode[index].opr.digit = num;
         parsedCode[index].opr.noOp = 0;
     } else if (checkLabelExists(line)) {
+        /* Mark the label as used */
+        int labelPosition = findLabelIndex(line);
+        labels[labelPosition].used = 1;
         /* Check if operand is a label */
         parsedCode[index].opr.isLabel = 1;
         parsedCode[index].opr.noOp = 0;
     } else {
         /* If none then show an error */
-        push_errors("Operand is not defined", parsedCode[index].addr);
+        push_errors("Operand is not defined", index);
     }
 }
 
@@ -59,37 +67,40 @@ void check_and_set_operand(int index, char* line, int size) {
 void check_operators(int index) {
     struct operand  oprd = parsedCode[index].opr;
     struct operator op = parsedCode[index].op;
-    if (op.op_req && oprd.noOp) push_errors("Operand required", parsedCode[index].addr);
-    if (!op.op_req && !oprd.noOp) push_errors("Operand not required", parsedCode[index].addr);
+    if (op.op_req && oprd.noOp) push_errors("Operand required", index);
+    if (!op.op_req && !oprd.noOp) push_errors("Operand not required", index);
 }
 /* Validating and storing a line to the parsed code table */
 void check_and_set_line(int index) {
     char* operand = parsedCode[index].opr.op;
     /* Priority wise first check errors in the operands */
-    check_and_set_operand(index, operand, getSize(operand));
+    check_and_set_operand(index, operand);
     /* If operands are correct and find errors in teh operators */
     check_operators(index);
 } 
 
 /* Find the machine code of digit or offset of label for machine code */
-void storeLabelOrData(int* instr, struct parsedCodeLine tmp) {
+void storeLabelOrData(int* instr, int index) {
+    struct parsedCodeLine tmp = parsedCode[index];
     if (tmp.opr.isDigit) {
         if (numInRange(tmp.opr.digit)) {
             /* Store the digit to the most significant 24 bits */
             (*instr) |= (tmp.opr.digit<<8);
         } else {
             /* Store errors if number out of range */
-            push_errors("Number out of range", tmp.addr);
+            push_warnings("Number out of range", index);
         }
     } else if (tmp.opr.isLabel) {
         int labelAddress = findLabelAddress(tmp.opr.op);
         /* Find the offset of label from the next address */
         int offset = labelAddress-tmp.addr-4;
+        if (offset == -4) push_warnings("Infinite loop expected", index);
+        if (offset == 0) push_warnings("Useless label", index);
         if (numInRange(offset)) {
             /* Store the offset in the most significant 24 bits */
             (*instr) |= (offset<<8);
         } else {
-            push_errors("Label not in range", tmp.addr);
+            push_warnings("Label not in range", index);
         }
     }
 }
@@ -129,20 +140,20 @@ void assignInstr() {
                     if (numInRange32(findOffset)) {
                         instruction = findOffset;
                     } else {
-                        push_errors("The label offset is out of range", parsedCode[i].addr);
+                        push_warnings("The label offset is out of range", parsedCode[i].addr);
                     }
                 } else if(parsedCode[i].opr.isDigit) {
                     if (numInRange32(parsedCode[i].opr.digit)) {
                         instruction |= ((parsedCode[i].opr.digit)<<8);
                     } else {
-                        push_errors("Number out of range", parsedCode[i].addr);
+                        push_warnings("Number out of range", parsedCode[i].addr);
                     }
                 }
             }
             else {
                 instruction += parsedCode[i].op.opcode;
                 if (parsedCode[i].op.op_req) {
-                    storeLabelOrData(&instruction, parsedCode[i]);
+                    storeLabelOrData(&instruction, i);
                 }
             }
         }
@@ -154,6 +165,10 @@ void storeLabel(int pc, char* line, int delimeter) {
     int k = 0;
     parsedCode[pc].label = (char*)(malloc(sizeof(char)*MAX_LABEL_SIZE));
     for(;k < delimeter;k++)  parsedCode[pc].label[k] = line[k];
+    /* Checking for already existing label */
+    if (checkLabelExists(parsedCode[pc].label)) {
+        push_errors("Label already defined above", pc);
+    }
 }
 
 void storeOperation(int opcodeIndex, int pc) {
@@ -166,4 +181,10 @@ void storeOperand(int pc, int index, char* line) {
     for(;line[size]!='\0';size++);
     parsedCode[pc].opr.op = (char*)(malloc(sizeof(char)*(size+1)));
     strcpy(parsedCode[pc].opr.op, line+index); 
+}
+/* Check for validity conditions on labels */
+void check_label_valid() {
+    int i = 0;
+    /* Condition 1 */
+    for(;i<pc;i++) if(parsedCode[i].label && bogusLabel(parsedCode[i].label)) push_errors("Bogus Label found", i);
 }

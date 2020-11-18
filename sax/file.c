@@ -1,5 +1,5 @@
 void createListingFile(char* fileName) {
-    char listingFileName[50];
+    char listingFileName[MAX_FILENAME_SIZE];
     FILE* fwrite;
     int index = 0;
     strcpy(listingFileName, fileName);
@@ -30,7 +30,7 @@ void createListingFile(char* fileName) {
 }
 
 void createMachineCodeFile(char* fileName) {
-    char machineCodeFileName[50];
+    char machineCodeFileName[MAX_FILENAME_SIZE];
     FILE* fout;
     int i = 0;
     strcpy(machineCodeFileName, fileName);
@@ -43,19 +43,32 @@ void createMachineCodeFile(char* fileName) {
     fclose(fout);
 }
 void createErrorFile(char* fileName) {
-    char errorFileName[50];
+    char errorFileName[MAX_FILENAME_SIZE];
     FILE* fwrite;
     int i = 0;
     strcpy(errorFileName, fileName);
     strcat(errorFileName, ".log");
     fwrite = fopen(errorFileName, "w");
     for(;i<error_list_index;i++) {
-        fprintf(fwrite, "Error Line: %d, %s\n", errors[i].line, errors[i].msg);
+        fprintf(fwrite, "Error Line: %d, %s\n", errors[i].line+1, errors[i].msg);
+    }
+    fclose(fwrite);
+}
+void createWarningFile(char* fileName) {
+    char warningFileName[MAX_FILENAME_SIZE];
+    FILE* fwrite;
+    int i = 0;
+    strcpy(warningFileName, fileName);
+    strcat(warningFileName, ".warn");
+    fwrite = fopen(warningFileName, "w");
+    for(;i<warning_index;i++) {
+        fprintf(fwrite, "Warning Line: %d, %s\n", warnings[i].line+1, warnings[i].msg);
     }
     fclose(fwrite);
 }
 void createFile(char* fileName) {
     if (error_list_index == 0) {
+        createWarningFile(fileName);
         createListingFile(fileName);
         createMachineCodeFile(fileName);
     } else {

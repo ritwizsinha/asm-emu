@@ -4,6 +4,7 @@
 #include <string.h>
 #include "constants.c" /* Independent */
 #include "error.c" /* Independent */
+#include "warnings.c" /* Independent */
 #include "functions/Utilities.c" /* Independent */
 #include "operand.c"     /* Independent */
 #include "mnemonic.c"   /* Independent */
@@ -36,11 +37,12 @@ int main(int argc, char* argv[])
 /* =============================================================================================== */
 void parse2() {
     int i = 0;
+    assign_valid_address();
+    check_label_valid();
     for (;i<pc;i++) {
         check_and_set_line(i);
     }
     /* Set lines with only comments having invalid address */
-        assign_valid_address();
         assignInstr();
 }
 void parse1(FILE** file) {
@@ -54,7 +56,8 @@ void parse1(FILE** file) {
                 c = getc(fin);
                 continue; 
             }
-            fscanf(fin, "%[^\n]%*c", str+1);
+            fgets(str+1, MAX_LINE_SIZE-2, fin);
+            /* fscanf(fin, "%[^\n]%*c", str+1); */
             parseSentence(str, &pc);
             c = getc(fin);
             pc++;
@@ -67,6 +70,8 @@ void parseSentence(char* line, int *pCounter) {
     int startOperand;
     /* Find and remove comment */
     int index = hasComment(line);
+    /* Check if last chracter is next line, if it is remove it */
+    if (line[size-1] == '\n') line[size-1] = '\0';
     if (index != -1) {
         /* Allocate space and store the comment */
         parsedCode[*pCounter].comment = (char*)(malloc((size-index+1)*sizeof(char)));
@@ -93,6 +98,6 @@ void parseSentence(char* line, int *pCounter) {
         startOperand = delimeter+1+parsedCode[*pCounter].op.size;
         storeOperand(*pCounter, startOperand, line);
     } else {
-        push_errors("Undefined mnemonic", *pCounter);
+        push_errors("Bogus mnemonic", *pCounter);
     }
 }
