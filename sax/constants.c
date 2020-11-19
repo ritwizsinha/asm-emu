@@ -23,7 +23,7 @@ int label_array_index = 0;
 int pc = 0;
 /* Index of the error array */
 int error_list_index=0;
-/* Index of ignore list */
+/* Index of ignore list */ 
 int ignore_list_iterator = 0;
 /* Warning list index */
 int warning_index = 0;

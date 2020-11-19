@@ -104,7 +104,8 @@ void storeLabelOrData(int* instr, int index) {
     } else if (tmp.opr.isLabel) {
         int labelAddress = findLabelAddress(tmp.opr.op);
         /* Find the offset of label from the next address */
-        int offset = labelAddress-tmp.addr-4;
+        int offset = labelAddress-tmp.addr-1;
+        printf("Instruction %d\t%d", labelAddress, tmp.addr);
         if (offset == -4) push_warnings("Infinite loop expected", index);
         if (offset == 0) push_warnings("Useless label", index);
         if (numInRange(offset)) {
@@ -130,7 +131,7 @@ void assign_valid_address() {
             parsedCode[i].addr = address;
             if (parsedCode[i].op.str) {
                 /* Increment the address pointer only if the current line has an operand */
-                address+=4;
+                address+=1;
             }
         } else parsedCode[i].addr = -1;
     }
@@ -161,22 +162,9 @@ void assignInstr() {
                     push_errors("SET should only have a numeric value", i);
                 }
             } 
-            else if (!strcmp(tmp.op.str, "br") || !strcmp(tmp.op.str, "brlz") || !strcmp(tmp.op.str, "brz") || !strcmp(tmp.op.str, "call")) {
-                instruction = tmp.op.opcode;
-                storeLabelOrData(&instruction, i);
-            }
             else {
                 instruction = tmp.op.opcode;
-                if (tmp.opr.isDigit) {
-                    instruction |= (tmp.opr.digit<<8);
-                } else if (tmp.opr.isLabel) {
-                    int index = findLabelCodeLineIndex(tmp.opr.op);
-                    if (!strcmp(parsedCode[index].op.str,"data") || !strcmp(parsedCode[index].op.str, "SET")) {
-                        instruction |= (parsedCode[index].opr.digit<<8);
-                    } else {
-                        push_errors("Label is invalid to be used as a value", i);
-                    }
-                }
+                storeLabelOrData(&instruction, i);
             }
             parsedCode[i].instrCode = instruction;
         }
