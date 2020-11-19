@@ -10,7 +10,7 @@ void createListingFile(char* fileName) {
         if (tmp.addr == -1) {
             fprintf(fwrite, "; %s\n", tmp.comment);
         } else {
-            fprintf(fwrite, "%08x\t %08x\t", tmp.addr, tmp.instrCode);
+            fprintf(fwrite, "%08X\t %08X\t", tmp.addr, tmp.instrCode);
             if (tmp.label) {
                 fprintf(fwrite, "%s:\t", tmp.label);
             } 

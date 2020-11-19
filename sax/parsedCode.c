@@ -44,12 +44,20 @@ void check_and_set_operand(int index, char* line) {
     int size = getSize(line);
     if (line == 0 || line[0] == '\0') return;
     if (index >= pc) return;
-    if ((!strcmp(parsedCode[index].op.str, "data") || !strcmp(parsedCode[index].op.str, "SET")) && size > 9) push_warnings("Overflow, data more than 32 bits", index);
-    else if (size > 7) push_warnings("Overlow, offset more than 24 bits", index);
     /* Strtol finds the number in the string if present in hexadecimal, octal or decimal */
     num  = strtol(line, &locationPtr, 0);
     /* Check if it is a number */
     if (*locationPtr == '\0') {
+        if (size > 2 && line[0] == '0' && line[1] == 'x') {
+            if ((!strcmp(parsedCode[index].op.str, "data") || !strcmp(parsedCode[index].op.str, "SET")) && size> 10) push_warnings("Overflow, data more than 32 bits", index);
+            else if (size > 8) push_warnings("Overlow, offset/value more than 24 bits", index);
+        } else if (size > 1 && line[0] == '0') {
+            if ((!strcmp(parsedCode[index].op.str, "data") || !strcmp(parsedCode[index].op.str, "SET")) && size > 11) push_warnings("Overflow, data more than 32 bits", index);
+            else if (size > 9) push_warnings("Overlow, offset/value more than 24 bits", index);
+        } else {
+            if ((!strcmp(parsedCode[index].op.str, "data") || !strcmp(parsedCode[index].op.str, "SET")) && size > 9) push_warnings("Overflow, data more than 32 bits", index);
+            else if (size > 7) push_warnings("Overlow, offset/value more than 24 bits", index);
+        }
         parsedCode[index].opr.isDigit = 1;
         parsedCode[index].opr.digit = num;
         parsedCode[index].opr.noOp = 0;
@@ -132,35 +140,46 @@ void assignInstr() {
     int i = 0;
     for(;i<pc;i++) {
         int instruction = 0;
-        int labelAddress = 0;
-        int findOffset = 0;
         if (parsedCode[i].addr == -1) continue;
         if (parsedCode[i].op.str) {
-            if (!strcmp(parsedCode[i].op.str,"data") || !strcmp(parsedCode[i].op.str, "SET")) {
-                if (parsedCode[i].opr.isLabel) {
-                    labelAddress = findLabelAddress(parsedCode[i].opr.op);
-                    findOffset = labelAddress-parsedCode[i].addr-4;
-                    if (numInRange32(findOffset)) {
-                        instruction = findOffset;
-                    } else {
-                        push_warnings("The label offset is out of range", i);
-                    }
-                } else if(parsedCode[i].opr.isDigit) {
-                    if (numInRange32(parsedCode[i].opr.digit)) {
-                        instruction |= ((parsedCode[i].opr.digit)<<8);
-                    } else {
-                        push_warnings("Number out of range", i);
-                    }
+            struct parsedCodeLine tmp = parsedCode[i];
+            if (!strcmp(tmp.op.str, "SET")) {
+                if (tmp.opr.isDigit) {
+                    if (numInRange32(tmp.opr.digit)) 
+                    instruction = tmp.opr.digit;
+                    else push_errors("Number out of range", i);
+                } else {
+                    push_errors("data should only have a numeric value", i);
                 }
+            } 
+            else if (!strcmp(tmp.op.str, "data")) {
+                if (tmp.opr.isDigit) {
+                    if (numInRange32(tmp.opr.digit)) 
+                    instruction = tmp.opr.digit;
+                    else push_errors("Number out of range", i);
+                } else {
+                    push_errors("SET should only have a numeric value", i);
+                }
+            } 
+            else if (!strcmp(tmp.op.str, "br") || !strcmp(tmp.op.str, "brlz") || !strcmp(tmp.op.str, "brz") || !strcmp(tmp.op.str, "call")) {
+                instruction = tmp.op.opcode;
+                storeLabelOrData(&instruction, i);
             }
             else {
-                instruction += parsedCode[i].op.opcode;
-                if (parsedCode[i].op.op_req) {
-                    storeLabelOrData(&instruction, i);
+                instruction = tmp.op.opcode;
+                if (tmp.opr.isDigit) {
+                    instruction |= (tmp.opr.digit<<8);
+                } else if (tmp.opr.isLabel) {
+                    int index = findLabelCodeLineIndex(tmp.opr.op);
+                    if (!strcmp(parsedCode[index].op.str,"data") || !strcmp(parsedCode[index].op.str, "SET")) {
+                        instruction |= (parsedCode[index].opr.digit<<8);
+                    } else {
+                        push_errors("Label is invalid to be used as a value", i);
+                    }
                 }
             }
+            parsedCode[i].instrCode = instruction;
         }
-        parsedCode[i].instrCode = instruction;
     }
 }
 
@@ -189,5 +208,5 @@ void storeOperand(int pc, int index, char* line) {
 void check_label_valid() {
     int i = 0;
     /* Condition 1 */
-    for(;i<pc;i++) if(parsedCode[i].label && bogusLabel(parsedCode[i].label)) push_errors("Bogus Label found", i);
+    for(;i<pc;i++) if (parsedCode[i].label && bogusLabel(parsedCode[i].label)) push_errors("Bogus Label found", i);
 }

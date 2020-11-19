@@ -1,0 +1,10 @@
+Types of Errors
+1. Duplicated labels
+2. Bogus Labels
+3. Unknown characters like ^%# etc in any line
+4. Language not alphanumberic (apart from the label ':' and the comment ';')
+5. Operand invalid label (undeclared label)
+6. Operand half number and half characters
+7. Operator requiring no arguments given arguments
+8. Operator requiring argumetns not given arguments
+9. Undefined mnemonic

@@ -88,7 +88,7 @@ void parseSentence(char* line, int *pCounter) {
     delimeter = hasLabel(line);
         if (delimeter != -1) {
             storeLabel(*pCounter, line, delimeter);
-            pushLabel(line, delimeter);
+            pushLabel(line, delimeter, *pCounter);
         }
     /* If there is a label and after removing label there is nothing then return */
     if (delimeter != -1 && delimeter == size-1) return; 

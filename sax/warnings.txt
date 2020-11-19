@@ -1,0 +1,5 @@
+Types of warnings
+
+1. Unused Label
+2. Infinite Loop
+3. Out of range values
