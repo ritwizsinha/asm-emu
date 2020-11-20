@@ -2,6 +2,7 @@
 str is the character pointer to the Label
 addr is the address at which the label is found
 used specifies whether the label was used somewhere as an argument or not( Useful for giving a warning)
+codeLineIndex specifies on which line of code the following label was found
 */
 struct Label {
     char *str;
@@ -41,7 +42,7 @@ void pushLabel(char* line, int delimeter, int index) {
     labels[label_array_index].codelineIndex = index;
     label_array_index++;
 }
-
+/* Finding the address of a particular existing label */
 int findLabelAddress(char* label) {
     int i=0;
     for(;i<lArrSize;i++) {
@@ -49,7 +50,7 @@ int findLabelAddress(char* label) {
     }
     return -1;
 }
-
+/* Finding the codeLineIndex of a particular existing label */
 int findLabelCodeLineIndex(char* label) {
     int i=0;
     for(;i<lArrSize;i++) {
@@ -58,6 +59,7 @@ int findLabelCodeLineIndex(char* label) {
     return -1;
 }
 
+/* Finding the index of a particular existing label */
 int findLabelIndex(char *label) {
         int i=0;
     for(;i<lArrSize;i++) {
@@ -65,13 +67,8 @@ int findLabelIndex(char *label) {
     }
     return -1;
 }
-
+/* Exactly as it sounds */
 void issue_warnings_for_unused_labels() {
     int i = 0;
     for(;i<label_array_index;i++) if (!labels[i].used) push_warnings("Unused Label", labels[i].codelineIndex);
 }
-/*
-int isValidLabel(char* label, int size) {
-    
-}
-*/

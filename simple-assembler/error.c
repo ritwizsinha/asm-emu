@@ -1,3 +1,6 @@
+/* Error structure containing of 
+@msg - error message
+@line - the line number on which error is found */
 struct Error {
     char* msg;
     int line;
@@ -17,6 +20,7 @@ void push_errors(char* errorMsg, int pc) {
     error_list_index++;
 }
 
+/* Print function for errors */
 void show_errors() {
     int i = 0;
     while(i < error_list_index) {

@@ -94,7 +94,7 @@ void check_and_set_line(int index) {
 void storeLabelOrData(int* instr, int index) {
     struct parsedCodeLine tmp = parsedCode[index];
     if (tmp.opr.isDigit) {
-        if (numInRange(tmp.opr.digit)) {
+        if (numInRange24(tmp.opr.digit)) {
             /* Store the digit to the most significant 24 bits */
             (*instr) |= (tmp.opr.digit<<8);
         } else {
@@ -105,10 +105,9 @@ void storeLabelOrData(int* instr, int index) {
         int labelAddress = findLabelAddress(tmp.opr.op);
         /* Find the offset of label from the next address */
         int offset = labelAddress-tmp.addr-1;
-        printf("Instruction %d\t%d", labelAddress, tmp.addr);
         if (offset == -1) push_warnings("Infinite loop expected", index);
         if (offset == 0) push_warnings("Useless label", index);
-        if (numInRange(offset)) {
+        if (numInRange24(offset)) {
             /* Store the offset in the most significant 24 bits */
             (*instr) |= (offset<<8);
         } else {

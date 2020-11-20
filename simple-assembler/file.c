@@ -1,9 +1,14 @@
+/* Function for creating listing file */
 void createListingFile(char* fileName) {
+    /* Character array for storing the filename */
     char listingFileName[MAX_FILENAME_SIZE];
     FILE* fwrite;
     int index = 0;
+    /* Getting the filename */
     strcpy(listingFileName, fileName);
-    strcat(listingFileName, ".l");
+    /* Adding extension for listing file */
+    strcat(listingFileName, ".list");
+    /* Opening for writing */
     fwrite = fopen(listingFileName, "w");
     for(;index<pc;index++) {
         struct parsedCodeLine tmp = parsedCode[index]; 
@@ -28,7 +33,7 @@ void createListingFile(char* fileName) {
     }
     fclose(fwrite);
 }
-
+/* Function for creating machine code file */
 void createMachineCodeFile(char* fileName) {
     char machineCodeFileName[MAX_FILENAME_SIZE];
     FILE* fout;
@@ -42,6 +47,8 @@ void createMachineCodeFile(char* fileName) {
     }
     fclose(fout);
 }
+
+/* Function for creating error file */
 void createErrorFile(char* fileName) {
     char errorFileName[MAX_FILENAME_SIZE];
     FILE* fwrite;
@@ -54,6 +61,7 @@ void createErrorFile(char* fileName) {
     }
     fclose(fwrite);
 }
+/* Function for creating warning file */
 void createWarningFile(char* fileName) {
     char warningFileName[MAX_FILENAME_SIZE];
     FILE* fwrite;
@@ -66,6 +74,7 @@ void createWarningFile(char* fileName) {
     }
     fclose(fwrite);
 }
+/* Utility function for selecting whether error file should be created or not */
 void createFile(char* fileName) {
     if (error_list_index == 0) {
         createWarningFile(fileName);

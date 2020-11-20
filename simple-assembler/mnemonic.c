@@ -10,6 +10,7 @@ struct operator {
     int op_req;
 }  mnemonics[MNEMONIC_STR_SIZE];
 
+/* Utility function for assigning mnemonic at a particular index */
 void assignMnemonic(struct operator *ptr, char* str, int size, int opcode, int op_req) {
     (ptr)->opcode = opcode;
     (ptr)->size = size;
@@ -17,6 +18,7 @@ void assignMnemonic(struct operator *ptr, char* str, int size, int opcode, int o
     (ptr)->op_req = op_req;
 }
 
+/* Prototype */
 void getOperand(char* label, int size);
 
 /* Store all the defined mnemonics */

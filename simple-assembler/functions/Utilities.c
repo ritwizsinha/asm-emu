@@ -1,3 +1,4 @@
+/* Getting the size of the given string */
 int getSize(const char* line) {
     int i=0;
     if (!line) return 0;
@@ -5,6 +6,7 @@ int getSize(const char* line) {
     return i;
 }
 
+/* Validates whether the given line assembly follows includes symbols only from the list of symbols that are allowed */
 void validate_line(const char* line) {
     int i = 0;
     char* possibleLanguage = ":;-+ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -23,6 +25,7 @@ void validate_line(const char* line) {
     if (colonCount > 1) push_errors("Found more than one colon on a line", pc);
 }
 
+/* Removes all whitespace from a line including tabs and spaces*/
 char* removeWhiteSpace(char* line) {
     int l = 0;
     int i = 0;
@@ -31,13 +34,15 @@ char* removeWhiteSpace(char* line) {
     return line;
 }
 
-int numInRange(int num) {
+/* Checks whether a number is in range for a 24 bits number*/
+int numInRange24(int num) {
     int MX = (1<<23)-1;
     int MN = -(1<<23);
     if (num > MX || num < MN) return 0;
     return 1;
 }
 
+/* Checks whether a number is in range for a 32 bits number*/
 int numInRange32(int num) {
     int MX = ((long)1<<31)-1;
     int MN = -1 - MX;
@@ -45,11 +50,13 @@ int numInRange32(int num) {
     return 1;
 }
 
+/* Clears the string of all characters and places the null character */
 void clearString(char* line, int size) {
     int i=0;
     for(;i<size;i++) line[i] = '\0';
 }
 
+/* Gets the filename from a path specified */
 char* getFileName(char* line) {
     int size = getSize(line),dotIndex = -1, i=0, slashIndex=0, endIndex = -1, startIndex=-1;
     char* fileName = '\0';
