@@ -55,7 +55,7 @@ Program format and structure:
 Assumptions
 ===========================
 1. Data should be specified after the HALT instruction to ensure smooth working . Warning will come.
-2. Code specified after HALT is redundant otherwise warning will come.
+2. Code specified after HALT is redundant otherwise. Warning will come.
 
 =============================
 Testing:
