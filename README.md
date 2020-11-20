@@ -1,5 +1,6 @@
 # SIMPLE ASSEMBLER AND EMULATOR
 EMULATOR CURRENTLY BUILDING
+
 1. All files are separated semantically according to the nature of the functions and the data they access. 
     - Functions/
                 - Comment.c : Functions related to comment detection and comment removal

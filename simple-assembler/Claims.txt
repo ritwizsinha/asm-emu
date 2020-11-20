@@ -5,7 +5,7 @@ Declaration of Authorship
 This txt file, claims.txt, is part of the assignment of CS321 at the 
 department of Computer Science and Engg, IIT Patna . 
 *****************************************************************************/
-
+**************NOTE: The report is provided in the readme at 
 Files:
 ==========
 *All the files i submitted, asm.c and emu.c and claims.txt, have my name and student id at the start, along with a declaration of authorship.
@@ -63,14 +63,14 @@ The other files were without any errors and the created listing file, machine co
 
 
 1)
-#Input: asm test1.asm    - I am currently implementing the emulator for the assembler.
+#Input: asm ../test1/test1.asm    - I am currently implementing the emulator for the assembler.
 #Output: 
 a. test1.list
 b. test1.warn (without warnings)
 c. test1.o
 
 2)
-#Input:asm test2.asm
+#Input:asm ../test2/test2.asm
 #Output: 
 b test2.log(lots of error messages)
 
@@ -87,7 +87,7 @@ Error Line: 8, Operand not required
 
 
 3)
-#Input:asm test3.asm
+#Input:asm ../test3/test3.asm
 #Output: 
 a. test3.list
 b. test3.warn (without warnings)
@@ -95,14 +95,14 @@ c. test3.o
 
 
 4)
-#Input:asm test4.asm
+#Input:asm ../test4/test4.asm
 #Output: 
 a. test4.list
 b. test4.warn (without any warning messages)
 c. test4.o
 
 5)
-#Input:asm test5.asm
+#Input:asm ../test5/test5.asm
 #Output: 
 b test5.log(lots of error messages)
 
@@ -122,21 +122,21 @@ Error Line: 18, data should only have a numeric value
 
 
 6)
-#Input:asm test6.asm
+#Input:asm ../test6/test6.asm
 #Output: 
 a. test6.list
 b. test6.warn (without any warning messages)
 c. test6.o
 
 7)
-#Input:asm test7.asm
+#Input:asm ../test7/test7.asm
 #Output: 
 a. test7.list
 b. test7.warn (without any warning messages)
 c. test7.o
 
 8)
-#Input:asm test8.asm
+#Input:asm ../test8/test8.asm
 #Output: 
 a. test8.list
 b. test8.warn (with many warning messages)
@@ -163,3 +163,10 @@ Warning Line: 7, All data should be defined after halt, otherwise may lead to am
 Warning Line: 0, Multiple HALTS have no effect
 
 c. test8.o
+
+9) 
+#Input asm ../test_bubble/bubble.asm
+#Output: 
+a. bubbble.list
+b. bubbble.warn (without any warning messages)
+c. bubbble.o
