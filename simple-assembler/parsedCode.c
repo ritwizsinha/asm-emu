@@ -40,23 +40,33 @@ void initParsedCode() {
 /* Function which checks the validity of operands , stores the errors if any and stores the validated operands */
 void check_and_set_operand(int index, char* line) {
     char* locationPtr = line;
-    int num = -1;
+    long num = -1;
     int size = getSize(line);
     if (line == 0 || line[0] == '\0') return;
     if (index >= pc) return;
     /* Strtol finds the number in the string if present in hexadecimal, octal or decimal */
     num  = strtol(line, &locationPtr, 0);
     /* Check if it is a number */
+
     if (*locationPtr == '\0') {
         if (size > 2 && line[0] == '0' && line[1] == 'x') {
-            if ((!strcmp(parsedCode[index].op.str, "data") || !strcmp(parsedCode[index].op.str, "SET")) && size> 10) push_warnings("Overflow, data more than 32 bits", index);
+            if (!strcmp(parsedCode[index].op.str, "data") || !strcmp(parsedCode[index].op.str, "SET")){
+                if (size > 10)
+                    push_warnings("Overflow, data more than 32 bits", index);
+            } 
             else if (size > 8) push_warnings("Overflow, offset/value more than 24 bits", index);
         } else if (size > 1 && line[0] == '0') {
-            if ((!strcmp(parsedCode[index].op.str, "data") || !strcmp(parsedCode[index].op.str, "SET")) && size > 11) push_warnings("Overflow, data more than 32 bits", index);
+            if (!strcmp(parsedCode[index].op.str, "data") || !strcmp(parsedCode[index].op.str, "SET")) {
+                if (size > 11)
+                    push_warnings("Overflow, data more than 32 bits", index);
+            }
             else if (size > 9) push_warnings("Overlow, offset/value more than 24 bits", index);
         } else {
-            if ((!strcmp(parsedCode[index].op.str, "data") || !strcmp(parsedCode[index].op.str, "SET")) && size > 9) push_warnings("Overflow, data more than 32 bits", index);
-            else if (size > 7) push_warnings("Overlow, offset/value more than 24 bits", index);
+            if ((!strcmp(parsedCode[index].op.str, "data") || !strcmp(parsedCode[index].op.str, "SET"))) {
+                if (!numInRange32(num))
+                    push_warnings("Overflow, data more than 32 bits", index);
+            }
+            else if (!numInRange24(num)) push_warnings("Overlow, offset/value more than 24 bits", index);
         }
         parsedCode[index].opr.isDigit = 1;
         parsedCode[index].opr.digit = num;
@@ -207,6 +217,10 @@ void storeOperand(int pc, int index, char* line) {
 /* Check for validity conditions on labels */
 void check_label_valid() {
     int i = 0;
+    for(;i<pc;i++) {
     /* Condition 1 */
-    for(;i<pc;i++) if (parsedCode[i].label && bogusLabel(parsedCode[i].label)) push_errors("Bogus Label found", i);
+        if (parsedCode[i].label && bogusLabel(parsedCode[i].label)) push_errors("Bogus Label found", i);
+    /* Condition 2 */
+        if (parsedCode[i].label && string_a_mnemonic(parsedCode[i].label)) push_errors("Label name cannot be a mnemonic name", i);
+    }
 }

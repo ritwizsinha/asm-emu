@@ -63,3 +63,9 @@ int getOperation(const char* line, int delimeter, int size) {
     }
     return -1;
 }
+
+int string_a_mnemonic(char* line) {
+    int i = 0;
+    for(;i<MNEMONIC_STR_SIZE;i++) if (!strcmp(line, mnemonics[i].str)) return 1;
+    return 0;
+}

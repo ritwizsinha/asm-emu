@@ -9,7 +9,7 @@ int getSize(const char* line) {
 /* Validates whether the given line assembly follows includes symbols only from the list of symbols that are allowed */
 void validate_line(const char* line) {
     int i = 0;
-    char* possibleLanguage = ":;-+ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    char* possibleLanguage = ":;-_+ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     /* TO check no unwanted characters appear */
     int colonCount = 0;
     while(line[i] != '\0') {
