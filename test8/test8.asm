@@ -5,14 +5,14 @@ label1: ldc 10
 br next ; Redundant label
 next: 
 loop: br loop ;Infinite loop
-adc 79274589742359 ; Overflow
-label389: ;Unused label
+
+num1: data 0xffffffffff ; data before halt cause problems
 
 
-
-
+HALT ; Multiple halts
 HALT
-num1: data 0xffffffffff ; Overflow
+adc 79274589742359 ; Code after HALT redundant
+label389: ;Unused label
 num2: data 0777777777777; Overflow
 num3: data 89123479810273489; Overflow
 num4: data -8479189234719; Overflow

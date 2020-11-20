@@ -1,13 +1,12 @@
-Warning Line: 7, Overlow, offset/value more than 24 bits
-Warning Line: 10, Overflow, data more than 32 bits
-Warning Line: 11, Overflow, data more than 32 bits
-Warning Line: 15, Overflow, data more than 32 bits
+Warning Line: 7, Overflow, data more than 32 bits
+Warning Line: 10, Overflow, offset/value more than 24 bits
+Warning Line: 12, Overflow, data more than 32 bits
 Warning Line: 16, Overflow, data more than 32 bits
+Warning Line: 17, Overflow, data more than 32 bits
 Warning Line: 2, Invalid label usage, Loading a code address
 Warning Line: 4, Useless label
 Warning Line: 6, Infinite loop expected
-Warning Line: 8, Unused Label
-Warning Line: 10, Unused Label
+Warning Line: 7, Unused Label
 Warning Line: 11, Unused Label
 Warning Line: 12, Unused Label
 Warning Line: 13, Unused Label
@@ -17,3 +16,6 @@ Warning Line: 16, Unused Label
 Warning Line: 17, Unused Label
 Warning Line: 18, Unused Label
 Warning Line: 19, Unused Label
+Warning Line: 20, Unused Label
+Warning Line: 7, All data should be defined after halt, otherwise may lead to ambigous results
+Warning Line: 0, Multiple HALTS have no effect

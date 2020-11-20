@@ -224,3 +224,24 @@ void check_label_valid() {
         if (parsedCode[i].label && string_a_mnemonic(parsedCode[i].label)) push_errors("Label name cannot be a mnemonic name", i);
     }
 }
+
+void check_halt_exists_before_data_or_set() {
+    int i = 0;
+    int first_halt_occurence = -1;
+    int halt_occurences = 0;
+    int first_data_or_set_occurence = -1;
+    int last_normal_mnemonic_occurence = -1;
+    for(;i<pc;i++) { 
+        if (!parsedCode[i].op.str) continue;
+        if (!strcmp(parsedCode[i].op.str,"HALT")) {
+            halt_occurences++;
+            if (first_halt_occurence == -1)  first_halt_occurence = i;
+        }
+        else if (!strcmp(parsedCode[i].op.str,"data") || !strcmp(parsedCode[i].op.str,"SET")) {
+            if (first_data_or_set_occurence == -1) first_data_or_set_occurence = i;
+        } else last_normal_mnemonic_occurence = i;
+    }
+    if (first_data_or_set_occurence != -1 && first_halt_occurence > first_data_or_set_occurence) push_warnings("All data should be defined after halt, otherwise may lead to ambigous results", first_data_or_set_occurence);
+    if (halt_occurences > 1) push_warnings("Multiple HALTS have no effect", -1);
+    if (halt_occurences == 1 && last_normal_mnemonic_occurence > first_halt_occurence) push_warnings("Code after HALT is redundant", last_normal_mnemonic_occurence); 
+}

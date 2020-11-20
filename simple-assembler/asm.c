@@ -62,6 +62,8 @@ void parse2() {
         assignInstr();
     /* Exactly as it sounds */
         issue_warnings_for_unused_labels();
+        /* This assembler does not have a data segment thus only after HALT should data be specified */
+        check_halt_exists_before_data_or_set();
 }
 void parse1(FILE** file) {
     FILE* fin = *file;
