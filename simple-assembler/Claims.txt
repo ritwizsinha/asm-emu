@@ -5,7 +5,7 @@ Declaration of Authorship
 This txt file, claims.txt, is part of the assignment of CS321 at the 
 department of Computer Science and Engg, IIT Patna . 
 *****************************************************************************/
-**************NOTE: The report is provided in the readme at 
+**************NOTE: The report/screenshoots are provided in the readme at (https://github.com/ritwizsinha/asm-emu)********************
 Files:
 ==========
 *All the files i submitted, asm.c and emu.c and claims.txt, have my name and student id at the start, along with a declaration of authorship.
@@ -66,7 +66,13 @@ The other files were without any errors and the created listing file, machine co
 #Input: asm ../test1/test1.asm    - I am currently implementing the emulator for the assembler.
 #Output: 
 a. test1.list
-b. test1.warn (without warnings)
+b. test1.warn 
+
+Warning Line: 6, Infinite loop expected
+Warning Line: 7, Useless label
+Warning Line: 9, Invalid label usage, Loading a code address
+Warning Line: 2, Unused Label
+
 c. test1.o
 
 2)
@@ -168,5 +174,6 @@ c. test8.o
 #Input asm ../test_bubble/bubble.asm
 #Output: 
 a. bubbble.list
-b. bubbble.warn (without any warning messages)
+b. bubbble.warn 
+   Warning Line: 125, Code after HALT is redundant
 c. bubbble.o
