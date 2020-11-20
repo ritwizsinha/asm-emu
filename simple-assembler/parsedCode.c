@@ -50,7 +50,7 @@ void check_and_set_operand(int index, char* line) {
     if (*locationPtr == '\0') {
         if (size > 2 && line[0] == '0' && line[1] == 'x') {
             if ((!strcmp(parsedCode[index].op.str, "data") || !strcmp(parsedCode[index].op.str, "SET")) && size> 10) push_warnings("Overflow, data more than 32 bits", index);
-            else if (size > 8) push_warnings("Overlow, offset/value more than 24 bits", index);
+            else if (size > 8) push_warnings("Overflow, offset/value more than 24 bits", index);
         } else if (size > 1 && line[0] == '0') {
             if ((!strcmp(parsedCode[index].op.str, "data") || !strcmp(parsedCode[index].op.str, "SET")) && size > 11) push_warnings("Overflow, data more than 32 bits", index);
             else if (size > 9) push_warnings("Overlow, offset/value more than 24 bits", index);
@@ -106,7 +106,7 @@ void storeLabelOrData(int* instr, int index) {
         /* Find the offset of label from the next address */
         int offset = labelAddress-tmp.addr-1;
         printf("Instruction %d\t%d", labelAddress, tmp.addr);
-        if (offset == -4) push_warnings("Infinite loop expected", index);
+        if (offset == -1) push_warnings("Infinite loop expected", index);
         if (offset == 0) push_warnings("Useless label", index);
         if (numInRange(offset)) {
             /* Store the offset in the most significant 24 bits */
@@ -150,7 +150,7 @@ void assignInstr() {
                     instruction = tmp.opr.digit;
                     else push_errors("Number out of range", i);
                 } else {
-                    push_errors("data should only have a numeric value", i);
+                    push_errors("SET should only have a numeric value", i);
                 }
             } 
             else if (!strcmp(tmp.op.str, "data")) {
@@ -159,12 +159,25 @@ void assignInstr() {
                     instruction = tmp.opr.digit;
                     else push_errors("Number out of range", i);
                 } else {
-                    push_errors("SET should only have a numeric value", i);
+                    push_errors("data should only have a numeric value", i);
                 }
-            } 
-            else {
+            } else if (!strcmp(tmp.op.str, "call") || !strcmp(tmp.op.str, "br") || !strcmp(tmp.op.str, "brz") || !strcmp(tmp.op.str, "brlz")) {
                 instruction = tmp.op.opcode;
                 storeLabelOrData(&instruction, i);
+            } else {
+                instruction = tmp.op.opcode;
+                if (tmp.opr.isDigit) {
+                    instruction |= (tmp.opr.digit<<8);
+                } else if (tmp.opr.isLabel) {
+                    int index = findLabelCodeLineIndex(tmp.opr.op);
+                    if (!strcmp(parsedCode[index].op.str, "SET") || !strcmp(parsedCode[index].op.str, "data")) {
+                        if (!strcmp(parsedCode[index].op.str, "SET"))
+                            instruction |= (parsedCode[index].opr.digit<<8);
+                        else instruction |= (findLabelAddress(parsedCode[i].opr.op)<<8);
+                    } else{
+                        push_warnings("Invalid label usage, Loading a code address", i);
+                    }
+                }
             }
             parsedCode[i].instrCode = instruction;
         }

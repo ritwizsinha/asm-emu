@@ -44,6 +44,7 @@ void parse2() {
     }
     /* Set lines with only comments having invalid address */
         assignInstr();
+        issue_warnings_for_unused_labels();
 }
 void parse1(FILE** file) {
     FILE* fin = *file;

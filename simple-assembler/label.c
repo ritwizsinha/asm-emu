@@ -65,6 +65,11 @@ int findLabelIndex(char *label) {
     }
     return -1;
 }
+
+void issue_warnings_for_unused_labels() {
+    int i = 0;
+    for(;i<label_array_index;i++) if (!labels[i].used) push_warnings("Unused Label", labels[i].codelineIndex);
+}
 /*
 int isValidLabel(char* label, int size) {
     
