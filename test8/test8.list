@@ -1,0 +1,19 @@
+; Almost all warnings
+0000	 00000000	ldc label1	; label1 is a breakpoint not a variable
+0001	 00000A00	label1:	ldc 10	
+0002	 00000011	br next	; Redundant label
+0003	 00000000	next:	
+0003	 FFFFFF11	loop:	br loop	;Infinite loop
+0004	 C2E51701	adc 79274589742359	; Overflow
+0005	 00000000	label389:	;Unused label
+0005	 00000012	HALT 
+0006	 FFFFFFFF	num1:	data 0xffffffffff	; Overflow
+0007	 FFFFFFFF	num2:	data 0777777777777	; Overflow
+0008	 2B3CF0D1	num3:	data 89123479810273489	; Overflow
+0009	 C8F00BE1	num4:	data -8479189234719	; Overflow
+000A	 8D9B7491	num5:	data -1919191919	; Overflow
+000B	 FFFFFFFF	num6:	SET 0xffffffffff	; Overflow
+000C	 FFFFFFFF	num7:	SET 0777777777777	; Overflow
+000D	 2B3CF0D1	num8:	SET 89123479810273489	; Overflow
+000E	 C8F00BE1	num9:	SET -8479189234719	; Overflow
+000F	 8D9B7491	num10:	SET -1919191919	; Overflow

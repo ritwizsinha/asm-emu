@@ -1,3 +1,13 @@
-Error Line: 4, Label name cannot be a mnemonic name
-Error Line: 2, Operand is not defined
+Error Line: 6, Label already defined above
+Error Line: 8, Unrecognized character found
+Error Line: 10, Bogus mnemonic
+Error Line: 11, Bogus mnemonic
+Error Line: 14, Found more than one colon on a line
+Error Line: 7, Bogus Label found
+Error Line: 9, Label name cannot be a mnemonic name
 Error Line: 3, Operand is not defined
+Error Line: 4, Operand is not defined
+Error Line: 12, Operand required
+Error Line: 13, Operand not required
+Error Line: 17, SET should only have a numeric value
+Error Line: 18, data should only have a numeric value

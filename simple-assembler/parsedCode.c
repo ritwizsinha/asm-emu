@@ -60,13 +60,13 @@ void check_and_set_operand(int index, char* line) {
                 if (size > 11)
                     push_warnings("Overflow, data more than 32 bits", index);
             }
-            else if (size > 9) push_warnings("Overlow, offset/value more than 24 bits", index);
+            else if (size > 9) push_warnings("Overflow, offset/value more than 24 bits", index);
         } else {
             if ((!strcmp(parsedCode[index].op.str, "data") || !strcmp(parsedCode[index].op.str, "SET"))) {
                 if (!numInRange32(num))
                     push_warnings("Overflow, data more than 32 bits", index);
             }
-            else if (!numInRange24(num)) push_warnings("Overlow, offset/value more than 24 bits", index);
+            else if (!numInRange24(num)) push_warnings("Overflow, offset/value more than 24 bits", index);
         }
         parsedCode[index].opr.isDigit = 1;
         parsedCode[index].opr.digit = num;
@@ -157,7 +157,7 @@ void assignInstr() {
                 if (tmp.opr.isDigit) {
                     if (numInRange32(tmp.opr.digit)) 
                     instruction = tmp.opr.digit;
-                    else push_errors("Number out of range", i);
+                    else push_warnings("Number out of range", i);
                 } else {
                     push_errors("SET should only have a numeric value", i);
                 }
@@ -166,7 +166,7 @@ void assignInstr() {
                 if (tmp.opr.isDigit) {
                     if (numInRange32(tmp.opr.digit)) 
                     instruction = tmp.opr.digit;
-                    else push_errors("Number out of range", i);
+                    else push_warnings("Number out of range", i);
                 } else {
                     push_errors("data should only have a numeric value", i);
                 }

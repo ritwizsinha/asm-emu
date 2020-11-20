@@ -1,0 +1,9 @@
+;  test07.asm
+;  program first stored a(3) into B and b(2) into A (after first two instuctions), then performs A := B << A;
+;  Final Result 2<<3 = 16
+0000	 00000300	ldc a	
+0001	 00000200	ldc b	
+0002	 00000008	shl 
+0003	 00000012	HALT 
+0004	 00000003	a:	SET 3	
+0005	 00000002	b:	SET 2	

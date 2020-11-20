@@ -1,0 +1,8 @@
+;  test06.asm
+;  program first adds 100 and 16 in hex, then subtracts 25 from it
+0000	 00006400	ldc 100	
+0001	 00001000	ldc 0x10	
+0002	 00000006	add 
+0003	 00001900	ldc 25	
+0004	 00000007	sub 
+0005	 00000012	HALT 
