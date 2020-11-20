@@ -22,3 +22,28 @@ EMULATOR CURRENTLY BUILDING
     - If there are errors only the error file is created
     - If there are no errors then the listing file, machine code file and the warnings file is created. 
 
+3. Compilation
+```
+cd simple-assembler
+gcc -std=c89 -pedantic -W -Wall -Wpointer-arith asm.c 
+
+```
+
+4. Assembling a file 
+```
+./asm ../test1/test.asm
+```
+
+5. Examples 
+
+## Assembly file
+![Assembly file](./images/test1.asm.png)
+
+## Listing file
+![Listing file](./images/test1.list.png)
+
+## Warning file
+![Warning file](./images/test1.warn.png)
+
+## Error log file
+![Error file](./images/test5.log.png)
