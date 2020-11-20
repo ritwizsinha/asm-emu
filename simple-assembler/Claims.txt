@@ -1,13 +1,43 @@
-1. CLAIMS:
+/*****************************************************************************
+TITLE: Claims																																
+AUTHOR:   RITWIZ SINHA
+Declaration of Authorship
+This txt file, claims.txt, is part of the assignment of CS321 at the 
+department of Computer Science and Engg, IIT Patna . 
+*****************************************************************************/
+
+Files:
+==========
+*All the files i submitted, asm.c and emu.c and claims.txt, have my name and student id at the start, along with a declaration of authorship.
+
+The evidence for Assembler including the output files from the 8 test examples has also been uploaded. The test files are in folder test1 to test8, alongwidth test_bubble.
+Each file is included with the executable file(.o), the listing file (.list) and the warning file. If there are errors there is also the error log file.
+
+*My c programs did not show any errors and warnings when i compiled it with
+1. gcc -std=c89 -pedantic 
+2. gcc -std=c89 -pedantic -W -Wall -Wpointer-arith 
+(PS: Did not use these two flags because there are some const char * to char * conversions and I have not prototyped all functions 
+-Wwrite-strings -Wstrict-prototypes)
+
+*Programs are compilable with gcc asm.c -o asm
+
+
+=============================
+Program format and structure:
+=============================
+1. The assembler:
+
+    - Labels, mnemonics and operands all are stored in array of structures.
+    - I have stored the file internally in the first parse and then performed the required operations.
+    - Detects all kinds of label erros.
+    - consistent and sensible formatting with sensible program structure. 
+    - sensible variable, function & type names with explanatory comments.
+		- advanced listing file.
+		- assembles test programs.
+	- implements and demonstrates the instruction SET.
     - The source  of both emulator and assembler is uploaded to github on the link (https://github.com/ritwizsinha/asm-emu)
-      I also have added my name in all the source files and added declaration of authorship
     - The code is written in ISO C89
-    - The code compiles without any errors and warnings
-    - The compilation is done as follows with the following flags.
-    - gcc -std=c89 -g -pedantic -W -Wall -Wpointer-arith -o asm asm.c
-    PS: The flags -Wwrite-strings and -Wstrict-prototypes are not used as I have not protoyped any function but defined them above main
     - Every function has comments except for self-explanatory ones
-    - Consistent and sensible formatting and sensible program structure is used.
     - Sensible variable, function & type names with explanatory comments are given
     - I have first read the file into a consistent internal form and then performed the operations.
     - I have diagonosed label errors like missing label, repeated label, bogus labels.
@@ -18,25 +48,118 @@
     - I have correctly assembled the test programs and have also the attached the listing file, the error and warning files and the machine code file
     - I have also included additional test programs named from test5.asm
     - I have implemented set correctly and the example can be seen from the test3.asm file
-    - I have not implemented the bubble sort myself but I am sure it will correctly compile and and run the program without any errors.
-    - I am currently implementing the emulator for the assembler.
-6. All files are separated semantically according to the nature of the functions and the data they access. 
-    - Functions/
-                - Comment.c : Functions related to comment detection and comment removal
-                - Utilities.c :  General helper functions required during various operations
-    - asm.c : Main file which has all the includes and the main function. The main file includes functions for initializing and parse1 and 
-    parse2. It also deals with opening the file and reading it. 
-    - constants.c : Initialization and # define of constants needed throughout program
-    - error.c : Structure for storing errors and related functions for pushing and printing errors
-    - label.c : Structure for storing the labels and related functions for extracting and detecting the labels
-    - mnemonic.c : Structure for storing the mnemonics and related functions for initializing and detecting and formatting mnemonics
-    - operand.c : Structure for operand 
-    - parsedCode.c : Structure for the parsed code and related functions
-    - warning.c : Structure for warnings and related functions, pretty similar to errors. 
+    - I have not implemented the bubble sort myself but it correctly compiles and and runs the program without any errors.
 
-6. Working: 
-    1. The file is read and parsed using first parse and stored in the structure with separation.
-    2. The parse1 parses the sentence and and stores the line number, label, operator and operand and also stores some errors which can be stored at this stage
-    3. The parse 2 detects all errors and warnings using different logic.
-    4. If there are errors only the error file is created
-    5. If there are no errors then the listing file, machine code file and the warnings file is created. 
+=============================
+Testing:
+=============================
+
+1. The assembler:
+
+I have tested  9 examplles as shown below. The errors only occurred in the file test2.asm, and test5.asm and 
+the program immediately stopped on the second pass. 
+
+The other files were without any errors and the created listing file, machine code file and the warning file is attached along.
+
+
+1)
+#Input: asm test1.asm    - I am currently implementing the emulator for the assembler.
+#Output: 
+a. test1.list
+b. test1.warn (without warnings)
+c. test1.o
+
+2)
+#Input:asm test2.asm
+#Output: 
+b test2.log(lots of error messages)
+
+error messages:
+Error Line: 4, Label already defined above
+Error Line: 9, Unrecognized character found
+Error Line: 11, Bogus mnemonic
+Error Line: 12, Bogus mnemonic
+Error Line: 10, Bogus Label found
+Error Line: 5, Operand is not defined
+Error Line: 6, Operand is not defined
+Error Line: 7, Operand required
+Error Line: 8, Operand not required
+
+
+3)
+#Input:asm test3.asm
+#Output: 
+a. test3.list
+b. test3.warn (without warnings)
+c. test3.o
+
+
+4)
+#Input:asm test4.asm
+#Output: 
+a. test4.list
+b. test4.warn (without any warning messages)
+c. test4.o
+
+5)
+#Input:asm test5.asm
+#Output: 
+b test5.log(lots of error messages)
+
+Error Line: 6, Label already defined above
+Error Line: 8, Unrecognized character found
+Error Line: 10, Bogus mnemonic
+Error Line: 11, Bogus mnemonic
+Error Line: 14, Found more than one colon on a line
+Error Line: 7, Bogus Label found
+Error Line: 9, Label name cannot be a mnemonic name
+Error Line: 3, Operand is not defined
+Error Line: 4, Operand is not defined
+Error Line: 12, Operand required
+Error Line: 13, Operand not required
+Error Line: 17, SET should only have a numeric value
+Error Line: 18, data should only have a numeric value
+
+
+6)
+#Input:asm test6.asm
+#Output: 
+a. test6.list
+b. test6.warn (without any warning messages)
+c. test6.o
+
+7)
+#Input:asm test7.asm
+#Output: 
+a. test7.list
+b. test7.warn (without any warning messages)
+c. test7.o
+
+8)
+#Input:asm test8.asm
+#Output: 
+a. test8.list
+b. test8.warn (with many warning messages)
+Warning Line: 7, Overflow, data more than 32 bits
+Warning Line: 10, Overflow, offset/value more than 24 bits
+Warning Line: 12, Overflow, data more than 32 bits
+Warning Line: 16, Overflow, data more than 32 bits
+Warning Line: 17, Overflow, data more than 32 bits
+Warning Line: 2, Invalid label usage, Loading a code address
+Warning Line: 4, Useless label
+Warning Line: 6, Infinite loop expected
+Warning Line: 7, Unused Label
+Warning Line: 11, Unused Label
+Warning Line: 12, Unused Label
+Warning Line: 13, Unused Label
+Warning Line: 14, Unused Label
+Warning Line: 15, Unused Label
+Warning Line: 16, Unused Label
+Warning Line: 17, Unused Label
+Warning Line: 18, Unused Label
+Warning Line: 19, Unused Label
+Warning Line: 20, Unused Label
+Warning Line: 7, All data should be defined after halt, otherwise may lead to ambigous results
+Warning Line: 0, Multiple HALTS have no effect
+
+c. test8.o

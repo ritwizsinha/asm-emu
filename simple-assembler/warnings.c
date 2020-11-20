@@ -1,3 +1,6 @@
+/* RITWIZ SINHA
+1801CS39
+I hereby declare that all this code is written by me and me alone */
 struct warning{
     char* msg;
     int line;

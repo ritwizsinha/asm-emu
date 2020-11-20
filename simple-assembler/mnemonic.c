@@ -1,3 +1,6 @@
+/* RITWIZ SINHA
+1801CS39
+I hereby declare that all this code is written by me and me alone */
 /* Structure for an organized view of the operator
 str stores the actual operator in string
 size is the size of the string

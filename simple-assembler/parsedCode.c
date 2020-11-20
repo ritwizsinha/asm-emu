@@ -1,3 +1,6 @@
+/* RITWIZ SINHA
+1801CS39
+I hereby declare that all this code is written by me and me alone */
 /* Structure storing a separated and condensed structure of line 
 addr stores the address in the meemory
 label stores the label if any in that line

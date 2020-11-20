@@ -1,3 +1,6 @@
+/* RITWIZ SINHA
+1801CS39
+I hereby declare that all this code is written by me and me alone */
 /* Error structure containing of 
 @msg - error message
 @line - the line number on which error is found */

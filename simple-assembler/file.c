@@ -1,3 +1,6 @@
+/* RITWIZ SINHA
+1801CS39
+I hereby declare that all this code is written by me and me alone */
 /* Function for creating listing file */
 void createListingFile(char* fileName) {
     /* Character array for storing the filename */

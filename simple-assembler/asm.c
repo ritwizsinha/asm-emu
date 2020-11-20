@@ -1,3 +1,7 @@
+/* RITWIZ SINHA
+1801CS39
+I hereby declare that all this code is written by me and me alone */
+/* Checks if a comment exists in a given line by checking for ';' */
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>

@@ -1,3 +1,6 @@
+/* RITWIZ SINHA
+1801CS39
+I hereby declare that all this code is written by me and me alone */
 /* Operand structure stores the operand meaningfully
 @op -> the string for the  stored  operand
 @isDigit -> boolean to show whether the operand is digit or not

@@ -1,3 +1,7 @@
+/* RITWIZ SINHA
+1801CS39
+I hereby declare that all this code is written by me and me alone */
+/* Checks if a comment exists in a given line by checking for ';' */
 /* Getting the size of the given string */
 int getSize(const char* line) {
     int i=0;
@@ -9,7 +13,7 @@ int getSize(const char* line) {
 /* Validates whether the given line assembly follows includes symbols only from the list of symbols that are allowed */
 void validate_line(const char* line) {
     int i = 0;
-    char* possibleLanguage = ":;-_+ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const char* possibleLanguage = ":;-_+ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     /* TO check no unwanted characters appear */
     int colonCount = 0;
     while(line[i] != '\0') {

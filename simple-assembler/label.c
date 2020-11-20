@@ -1,3 +1,6 @@
+/* RITWIZ SINHA
+1801CS39
+I hereby declare that all this code is written by me and me alone */
 /* This label structure stores the labels encountered in a particular program 
 str is the character pointer to the Label
 addr is the address at which the label is found
