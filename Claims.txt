@@ -50,6 +50,13 @@ Program format and structure:
     - I have implemented set correctly and the example can be seen from the test3.asm file
     - I have not implemented the bubble sort myself but it correctly compiles and and runs the program without any errors.
 
+
+============================
+Assumptions
+===========================
+1. Data should be specified after the HALT instruction to ensure smooth working . Warning will come.
+2. Code specified after HALT is redundant otherwise warning will come.
+
 =============================
 Testing:
 =============================
