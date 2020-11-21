@@ -7,5 +7,6 @@
 0004	 00000011	br next	;offset should be zero
 0005	 00000000	next:	
 0005	 00000000	ldc loop	; load code address
-0006	 00000700	ldc var1	; forward ref
-0007	 00000000	var1:	data 0	; a variable
+0006	 00000800	ldc var1	; forward ref
+0007	 00000012	HALT 
+0008	 00000000	var1:	data 0	; a variable
