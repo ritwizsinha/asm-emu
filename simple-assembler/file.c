@@ -45,7 +45,7 @@ void createMachineCodeFile(char* fileName) {
     strcat(machineCodeFileName, ".o");
     fout = fopen(machineCodeFileName, "wb");
     for(;i<pc;i++) {
-        if (parsedCode[i].addr == -1) continue;
+        if (parsedCode[i].addr == -1 || (parsedCode[i].label && !parsedCode[i].op.str)) continue;
         fwrite(&parsedCode[i].instrCode, sizeof(int), 1, fout);
     }
     fclose(fout);
