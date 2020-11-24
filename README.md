@@ -47,3 +47,6 @@ gcc -std=c89 -pedantic -W -Wall -Wpointer-arith asm.c
 
 ## Error log file
 ![Error file](./images/test5.log.png)
+
+
+ hexdump -v -e '1/4 "%032_ad " '

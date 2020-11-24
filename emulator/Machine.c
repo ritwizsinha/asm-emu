@@ -2,9 +2,10 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
+#define memory_size 1000
 
 int exit_loop = 0;
-int* machine_code_store = 0;
+int memory_store[memory_size];
 int size = 0;
 
 /* Internal State */
@@ -20,22 +21,22 @@ void adc(int val) {
 
 void ldl(int val) {
     register_b = register_a;
-    register_a = stack_pointer + val >= size ? 0 : machine_code_store[stack_pointer + val];
+    register_a = stack_pointer + val >= size ? 0 : memory_store[stack_pointer + val];
 }
 
 void stl (int val) {
     if (stack_pointer + val < size) {
-        machine_code_store[stack_pointer + val] = register_a;
+        memory_store[stack_pointer + val] = register_a;
         register_a = register_b;
     }
 } 
 
 void ldnl(int val) {
-    register_a = register_a + val >= size ? 0 : machine_code_store[register_a + val];
+    register_a = register_a + val >= size ? 0 : memory_store[register_a + val];
 }
 
 void stnl(int val) {
-    if (register_a + val< size) machine_code_store[register_a + val]  = register_b;
+    if (register_a + val< size) memory_store[register_a + val]  = register_b;
 }
 
 void add(int val) {
@@ -43,7 +44,7 @@ void add(int val) {
 }
 
 void sub(int val) {
-    register_a-=register_b;
+    register_a = register_b - register_a;
 }
 
 void shl(int val) {
@@ -105,27 +106,76 @@ int fetch (FILE** fin) {
 }
 void decode_and_execute(int instruction) {
     int opcode = (instruction&0xFF);
-    int val = instruction - opcode;
+    int val = instruction>>8;
     if (opcode > 18) return;
     printf("%08X  %s\n",instruction, instruction_list[opcode]);
     if (!strcmp(instruction_list[opcode], "HALT")) return;
     (*function_pointers[opcode])(val);
 }
+int loader(FILE** fin) {
+    int size = 0;
+    while(!feof(*fin)) {
+        int instruction = 0;
+        if (size > memory_size) {
+            printf("OUT OF MEMORY");
+            break;
+        };
+        instruction  = fetch(fin);
+        memory_store[size++] = instruction;
+    }
+    return size-1;
+}
+
+void print_memory(int size) {
+    int i = 0;
+    for (i;i<size;i++) printf("%08X\n", memory_store[i]);
+}
+
+void run_program(int size) {
+    for (;program_counter<size;program_counter++) {
+        decode_and_execute(memory_store[program_counter]);
+    }
+}
 int main(int argc, char* argv[]) {
     FILE* fptr;
+    int programSize;
+    if (argc <= 2) {
+        printf("usage: emu [options] file.o\n-trace   show instruction trace\n-read   show memory reads\n-write     show memory writes\n-before     show memory dump before execution\n-after      show memory dump after execution\n-wipe wipe written flags before execution\n-isa      display isa\n");
+    } else {
+        printf("%s\n", argv[2]);
+        fptr = fopen(argv[2], "rb");
+        if (fptr == 0) printf("Unable to read the executable");
+       else {
+            programSize = loader(&fptr);
+           if (!strcmp(argv[1], "-trace")) {
+               printf("Program loaded to memory, You can execute it line by line by pressing any character, q will quit the program\n");
+               char ch;
+               while(ch) {
+                   
+               }
+           } else if (!strcmp(argv[1], "-read")) {
 
-    if (argc < 2) printf("Please enter the executable");
-    fptr = fopen(argv[1], "rb");
-    if (fptr == 0) printf("Unable to read the executable");
-    /* First read to store all machine code in array */
-    for (;size++;!feof(fptr)) {
-        int instruction = 0;
-        machine_code_store[size] = (int*)(malloc(sizeof(int)));
-        instruction  = fetch(&fptr);
-        machine_code_store[size] = instruction;
-    }
-    for (;program_counter<size;program_counter++) {
-        decode_and_execute(machine_code_store[program_counter]);
+           } else if (!strcmp(argv[1], "-write")) {
+
+           } else if (!strcmp(argv[1], "-before")) {
+               /* Simply print the whole memory content */
+                print_memory(programSize);
+           } else if (!strcmp(argv[1], "-after")) {
+               /* First execute the program then show the memory */
+                printf("Executing the program first, if there is an infinite it will get stuck\n");
+                run_program(programSize);
+                /* Exexuted printing memory contents */
+                printf("Executed!!! now printing memory contents\n");
+                print_memory();
+           } else if (!strcmp(argv[1], "-wipe")) {
+
+           } else if (!strcmp(argv[1], "-isa")) {
+           } 
+           /* Load the program to the local memory  and get size of program*/
+            for (;program_counter<programSize;program_counter++) {
+                decode_and_execute(memory_store[program_counter]);
+            }
+        }
     }
     return 0;
 }
