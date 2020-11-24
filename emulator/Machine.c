@@ -1,8 +1,11 @@
+/* RITWIZ SINHA
+1801CS39
+I hereby declare that all this code is written by me and me alone */
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
-#define memory_size 10000
+#define memory_size 100000
 
 int exit_loop = 0;
 int memory_store[memory_size];
@@ -188,8 +191,9 @@ void print_memory(int size) {
 
 void run_program(int size) {
     while(program_counter < size && program_counter >= 0) {
+        int opcode;
         decode_and_execute(memory_store[program_counter]);
-        int opcode = (memory_store[program_counter]&0xFF);
+        opcode = (memory_store[program_counter]&0xFF);
         if (!strcmp(instruction_list[opcode], "HALT")) break;
     }
 }
@@ -206,7 +210,7 @@ int print_instr(int instruction) {
         if (opcode > 18) printf("%08X\n", instruction);
         else {
             int flag = 1;
-            printf("%s ", instruction_list[opcode], val);
+            printf("%s ", instruction_list[opcode]);
             for (;start<11;start++) if (!strcmp(operand_present_list[start], instruction_list[opcode])) {
                 printf("%08X\n", val);
                 flag = 0;
@@ -224,7 +228,6 @@ void print_program(int size) {
         int res = print_instr(memory_store[program_counter]);
         if (res == -1) {
             printf("HALT\n");
-            return; 
         }
 
     }
